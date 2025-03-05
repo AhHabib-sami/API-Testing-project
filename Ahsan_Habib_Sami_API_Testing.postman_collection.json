@@ -1,0 +1,552 @@
+{
+	"info": {
+		"_postman_id": "48a895d0-2a07-429e-a7fe-d74a01af02e7",
+		"name": "Ahsan Habib Sami API Testing Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41726013"
+	},
+	"item": [
+		{
+			"name": "Get Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"console.log(\"Response Length: \" + jsonData.length);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/studentsDetails",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Student",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var FirstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"pm.environment.set(\"First Name\" , FirstName )\r",
+							"\r",
+							"var MiddleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"pm.environment.set(\"Middle Name \", MiddleName)\r",
+							"\r",
+							"var LastName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+							"pm.environment.set(\"Last Name\" , LastName )\r",
+							"\r",
+							"const moment = require('moment')\r",
+							"const today = moment()\r",
+							"\r",
+							"var dob = today.add(5, 'M').format(\"YYYY-MM-DD\")\r",
+							"pm.environment.set(\"Date of Birth\", dob)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"//Chaining of ID\r",
+							"var jsonData = pm.response.json()\r",
+							"pm.environment.set(\"ID\",jsonData.id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n\"first_name\": \"{{First Name}}\", \r\n\"middle_name\": \"{{Middle Name}}\", \r\n\"last_name\": \"{{Last Name}}\", \r\n\"date_of_birth\": \"{{Date of Birth}}\" \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/studentsDetails",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Specific Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()\r",
+							"\r",
+							"\r",
+							"pm.test(\"Request was successfull\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"ID field validated\",function(){\r",
+							"    pm.expect(jsonData.data.id).to.eql(pm.environment.get(\"ID\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"First Name matched with Environment\",function(){\r",
+							"    pm.expect(jsonData.data.first_name).to.eql(pm.environment.get(\"First Name\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Middle Name matched with Environment\",function(){\r",
+							"    pm.expect(jsonData.data.middle_name).to.eql(pm.environment.get(\"Middle Name\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Last Name matched with Environment\",function(){\r",
+							"    pm.expect(jsonData.data.last_name).to.eql(pm.environment.get(\"Last Name\"))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Date of Birth matched Successfully\",function(){\r",
+							"    pm.expect(jsonData.data.dob).to.eql(pm.environment.get(\"Date Date of Birth\"))\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/studentsDetails/{{ID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails",
+						"{{ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Technical Skills",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request Successful\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Array of available language options\r",
+							"var availableLanguages = [\"Python\", \"Java\", \"C++\", \"JavaScript\", \"Ruby\", \"Go\", \"Swift\", \"Kotlin\", \"Rust\", \"TypeScript\", \"Dart\", \"PHP\", \"Perl\", \"SQL\"];\r",
+							"\r",
+							"// Function to get exactly 2 random languages\r",
+							"function getRandomLanguages() {\r",
+							"    var randomLanguages = [];\r",
+							"    \r",
+							"    while (randomLanguages.length < 2) {\r",
+							"        // Pick a random language from availableLanguages\r",
+							"        var randomIndex = Math.floor(Math.random() * availableLanguages.length);\r",
+							"        var selectedLanguage = availableLanguages[randomIndex];\r",
+							"\r",
+							"        // Avoid duplicates by checking if language already exists in the array\r",
+							"        if (!randomLanguages.includes(selectedLanguage)) {\r",
+							"            randomLanguages.push(selectedLanguage);\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    return randomLanguages;\r",
+							"}\r",
+							"\r",
+							"// Generate a random language array with exactly 2 languages\r",
+							"var languageArray = getRandomLanguages();\r",
+							"\r",
+							"// Set the array directly as an environment variable 'Language'\r",
+							"pm.environment.set(\"Language\", languageArray);\r",
+							"\r",
+							"console.log( languageArray);\r",
+							"\r",
+							"\r",
+							"\r",
+							"var year = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"pm.environment.set(\"Year of Exp\",year)\r",
+							"\r",
+							"var last_used = pm.variables.replaceIn(\"{{$randomMonth}}\")\r",
+							"pm.environment.set(\"Last Used\",last_used)\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n\"id\": 1, \r\n\"language\": [ \r\n\"{{Language}}\" \r\n], \r\n\"yearexp\": \"{{Year of Exp}}\", \r\n\"lastused\": \"{{Last Used}}\", \r\n\"st_id\": {{ID}} \r\n} \r\nons",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/technicalskills",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"technicalskills"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Student Address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status validation\", function(){\r",
+							"    pm.expect(jsonData.status).to.eql('true')})\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message validation\", function(){\r",
+							"    pm.expect(jsonData.msg).to.eql(\"Add  data success\")})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var house = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"pm.environment.set(\"House Number\",house)\r",
+							"\r",
+							"var city = pm.variables.replaceIn(\"{{$randomCity}}\")\r",
+							"pm.environment.set(\"City\",city)\r",
+							"\r",
+							"var state = pm.variables.replaceIn(\"{{$randomCity}}\")\r",
+							"pm.environment.set(\"State\",state)\r",
+							"\r",
+							"var country = pm.variables.replaceIn(\"{{$randomCountry}}\")\r",
+							"pm.environment.set(\"Country\",country)\r",
+							"\r",
+							"\r",
+							"var std_code = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"pm.environment.set(\"Std_code\",std_code)\r",
+							"\r",
+							"var home_city = pm.variables.replaceIn(\"{{$randomCity}}\")\r",
+							"pm.environment.set(\"Home City\",home_city)\r",
+							"\r",
+							"var ph_num = pm.variables.replaceIn(\"{{$randomPhoneNumber}}\")\r",
+							"pm.environment.set(\"Phone Number\",ph_num)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n\"Permanent_Address\": { \r\n\"House_Number\": \"{{House Number}}\",\r\n\"City\": \"{{City}}\",\r\n \"State\": \"{{State}}\", \r\n\"Country\": \"{{Country}}\",\r\n\"PhoneNumber\": [ \r\n{ \r\n\"Std_Code\": \"{{std_code}}\",\r\n\"Home\": \"{{Home City}}\",\r\n \"Mobile\": \"{{Phone Number}}\" \r\n},\r\n{ \r\n\"Std_Code\": \"{{std_code}}\",\r\n\"Home\": \"{{Home City}}\", \r\n\"Mobile\": \"{{Phone Number}}\" \r\n} \r\n] \r\n},\r\n\"stId\": {{ID}} \r\n} \r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/addresses",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"addresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FINAL STUDENT DETAILS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is Successful\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate Language field as a String\", function () {\r",
+							"    // Get the response body as JSON\r",
+							"    var responseData = pm.response.json();  \r",
+							"\r",
+							"    // Log the response to inspect the structure (optional)\r",
+							"    console.log(\"Response Data:\", responseData);\r",
+							"\r",
+							"    // Access the 'language' field from the response\r",
+							"    var languageField = responseData.data && responseData.data.TechnicalDetails \r",
+							"                        && responseData.data.TechnicalDetails[0] \r",
+							"                        && responseData.data.TechnicalDetails[0].language;\r",
+							"\r",
+							"    // Ensure that the 'language' field exists and is an array\r",
+							"    pm.expect(languageField, \"Language field is missing or not an array\").to.be.an(\"array\").that.is.not.empty;\r",
+							"\r",
+							"    // Convert the language array into a string\r",
+							"    var languageString = languageField.join(\", \");\r",
+							"\r",
+							"    // Retrieve the expected language array from the environment variable\r",
+							"    var expectedLanguages = pm.environment.get(\"Language\");\r",
+							"\r",
+							"    // Parse the expected languages from the environment variable if needed\r",
+							"    if (typeof expectedLanguages === \"string\") {\r",
+							"        expectedLanguages = JSON.parse(expectedLanguages);\r",
+							"    }\r",
+							"\r",
+							"    // Ensure the expectedLanguages array is valid\r",
+							"    pm.expect(expectedLanguages, \"Expected language array is missing or invalid\").to.be.an(\"array\").that.is.not.empty;\r",
+							"\r",
+							"    // Convert expected languages to a string\r",
+							"    var expectedLanguageString = expectedLanguages.join(\", \");\r",
+							"\r",
+							"    // Validate that both expected and actual language strings match\r",
+							"    pm.expect(languageString).to.equal(expectedLanguageString);\r",
+							"\r",
+							"    // Optionally, log the expected and actual language values\r",
+							"    console.log(\"Expected Language String:\", expectedLanguageString);\r",
+							"    console.log(\"Actual Language String in Response:\", languageString);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"//3\r",
+							"// Test Case: Validate Year of Experience field is a valid string\r",
+							"pm.test(\"Year of Experience field validation\", function () {\r",
+							"    var yearExp = pm.response.json().data.TechnicalDetails[0].yearexp; // Accessing year of experience\r",
+							"    pm.expect(yearExp).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"// 4\r",
+							"pm.test(\"House Number field validation\", function () {\r",
+							"    var houseNumber = pm.response.json().data.Address[0].Permanent_Address.House_Number; // Accessing house number\r",
+							"    pm.expect(houseNumber).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"// Test Case: Validate City field is not empty and is a string 5\r",
+							"pm.test(\"City field validation\", function () {\r",
+							"    var city = pm.response.json().data.Address[0].Permanent_Address.City; // Accessing city field\r",
+							"    pm.expect(city).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"//6\r",
+							"\r",
+							"// Test Case: Validate Country field is not empty and is a string\r",
+							"pm.test(\"Country field validation\", function () {\r",
+							"    var country = pm.response.json().data.Address[0].Permanent_Address.Country; // Accessing country field\r",
+							"    pm.expect(country).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"//7\r",
+							"\r",
+							"// Test Case: Validate Mobile field contains valid phone numbers\r",
+							"// Test Case: Validate Mobile field contains valid phone numbers (with or without hyphens)\r",
+							"pm.test(\"Mobile field validation\", function () {\r",
+							"    var mobileNumbers = pm.response.json().data.Address[0].Permanent_Address.PhoneNumber; // Accessing phone numbers\r",
+							"    pm.expect(mobileNumbers).to.be.an(\"array\").that.is.not.empty;  // Ensure it's a non-empty array\r",
+							"\r",
+							"    mobileNumbers.forEach(function (phone) {\r",
+							"        pm.expect(phone.Mobile).to.match(/^\\d{3}[-\\s]?\\d{3}[-\\s]?\\d{4}$/); // Mobile number can have hyphens or spaces between digits\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"//8\r",
+							"// Test Case: Validate Current Address field is either null or a string\r",
+							"pm.test(\"Current Address field validation\", function () {\r",
+							"    var currentAddress = pm.response.json().data.Address[0].Current_Address; // Accessing current address field\r",
+							"    pm.expect(currentAddress).to.be.oneOf([null, \"\"]);  // Ensure it's null or an empty string\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//9\r",
+							"// Test Case: Validate State field is not empty and is a string\r",
+							"pm.test(\"State field validation\", function () {\r",
+							"    var state = pm.response.json().data.Address[0].Permanent_Address.State; // Accessing state field\r",
+							"    pm.expect(state).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//10\r",
+							"\r",
+							"\r",
+							"// Test Case: Validate Std_Code field contains valid code format\r",
+							"pm.test(\"Std_Code field validation\", function () {\r",
+							"    var stdCode = pm.response.json().data.Address[0].Permanent_Address.PhoneNumber[0].Std_Code; // Accessing Std_Code field\r",
+							"    pm.expect(stdCode).to.match(/^\\d+$/);  // Ensure Std_Code is numeric\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//11\r",
+							"\r",
+							"// Test Case: Validate Home field is not empty and is a string\r",
+							"pm.test(\"Home field validation\", function () {\r",
+							"    var home = pm.response.json().data.Address[0].Permanent_Address.PhoneNumber[0].Home; // Accessing Home field\r",
+							"    pm.expect(home).to.be.a(\"string\").that.is.not.empty;  // Ensure it's a non-empty string\r",
+							"});\r",
+							"\r",
+							"\r",
+							"//12\r",
+							"\r",
+							"// Test Case: Validate Current_Address field is either null or a string\r",
+							"pm.test(\"Current_Address field validation\", function () {\r",
+							"    var currentAddress = pm.response.json().data.Address[0].Current_Address; // Accessing current address field\r",
+							"    pm.expect(currentAddress).to.be.oneOf([null, \"\"]);  // Ensure it's null or an empty string\r",
+							"});\r",
+							"\r",
+							"//console.log(data.TechnicalDetails[0].language[0])\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/FinalStudentDetails/{{ID}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"FinalStudentDetails",
+						"{{ID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
